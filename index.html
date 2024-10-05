@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Flip</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            overflow: hidden;
+            touch-action: manipulation; /* Disable double-tap zoom */
+        }
+
+        /* Container holding the card */
+        .card-container {
+            width: 90%; /* Adjust card size */
+            height: 90%;
+            perspective: 1000px; /* Perspective to create the 3D effect */
+            z-index: 1; /* Ensure card stays above moving logos */
+        }
+
+        /* Card style */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        /* The front and back of the card */
+        .card-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Hide back side when front is visible */
+        }
+
+        /* Back side (flips to this) */
+        .card-back {
+            transform: rotateY(180deg); /* Starts rotated, invisible */
+        }
+
+        /* When the card is flipped, rotate 180 degrees */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Card image styling */
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Stäng (Close) Button */
+        .close-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #000; /* Red color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .open-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px; /* Move this button to the right */
+            background: none; /* No background */
+            border: none; /* No border */
+            padding: 0; /* No padding */
+            cursor: pointer; /* Cursor pointer for clickable */
+            z-index: 10; /* Ensure it's above everything */
+        }
+
+        /* Moving logos */
+        .logo {
+            position: absolute;
+            width: 100px; /* Small size for the logos */
+            height: auto;
+            z-index: 0; /* Behind the card */
+            opacity: 0.33;
+        }
+
+        /* Keyframes for logo movement */
+        @keyframes move1 {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(50vw, 5vh); }
+            50% { transform: translate(50vw, 30vh); }
+            75% { transform: translate(5vw, 50vh); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes move2 {
+            0% { transform: translate(20vw, 10vh); }
+            25% { transform: translate(70vw, 10vh); }
+            50% { transform: translate(70vw, 60vh); }
+            75% { transform: translate(10vw, 60vh); }
+            100% { transform: translate(20vw, 10vh); }
+        }
+        @keyframes move3 {
+            0% { transform: translate(30vw, 15vh); }
+            25% { transform: translate(50vw, 25vh); }
+            50% { transform: translate(50vw, 70vh); }
+            75% { transform: translate(10vw, 70vh); }
+            100% { transform: translate(30vw, 15vh); }
+        }
+        @keyframes move4 {
+            0% { transform: translate(10vw, 30vh); }
+            25% { transform: translate(70vw, 30vh); }
+            50% { transform: translate(70vw, 50vh); }
+            75% { transform: translate(15vw, 50vh); }
+            100% { transform: translate(10vw, 30vh); }
+        }
+
+        /* Apply slower animation to each logo */
+        .logo:nth-child(1) {
+            animation: move1 20s linear infinite alternate; /* Increased duration */
+        }
+        .logo:nth-child(2) {
+            animation: move2 24s linear infinite alternate; /* Increased duration */
+        }
+        .logo:nth-child(3) {
+            animation: move3 28s linear infinite alternate; /* Increased duration */
+        }
+        .logo:nth-child(4) {
+            animation: move4 32s linear infinite alternate; /* Increased duration */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Card container holding the front and back -->
+    <div class="card-container">
+        <div class="card" id="card">
+            <!-- Front side (original card) -->
+            <div class="card-side card-front">
+                <img src="IMG_8459.jpg" alt="Card Front" class="card-image">
+            </div>
+            <!-- Back side (new image) -->
+            <div class="card-side card-back">
+                <img src="IMG_8465.jpg" alt="Card Back" class="card-image">
+            </div>
+        </div>
+    </div>
+    
+    <img src="logo.png" alt="Moving Logo" class="logo">
+    <img src="logo.png" alt="Moving Logo" class="logo">
+    <img src="logo.png" alt="Moving Logo" class="logo">
+    <img src="logo.png" alt="Moving Logo" class="logo">
+    
+    <!-- Stäng button -->
+    <button class="close-btn" onclick="handleClose()">Stäng</button>
+    
+    <!-- New Close button using an image -->
+    <button class="open-btn" onclick="handleClose()">
+        <img src="IMG_8466.png" style="width: 50px; height: auto;"> <!-- Adjust size as needed -->
+    </button>
+    
+    <script>
+        // Get the card element
+        const card = document.getElementById('card');
+        let closeButtonClickCount = 0; // Counter for close button clicks
+
+        // Add click event to the card to flip it
+        card.addEventListener('click', function() {
+            card.classList.toggle('flipped');
+        });
+
+        // Function to handle close button clicks
+        function handleClose() {
+            closeButtonClickCount++; // Increment the count
+            if (closeButtonClickCount === 3) {
+                // Change the card image
+                const cardFrontImage = card.querySelector('.card-front .card-image');
+                cardFrontImage.src = 'ibaa.jpg'; // Change to new image
+                closeButtonClickCount = 0; // Reset the counter
+            }
+        }
+    </script>
+
+</body>
+</html>
